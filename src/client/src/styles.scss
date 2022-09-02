@@ -3,9 +3,7 @@
 html,
 body {
   @include fullScreen();
-  position: absolute;
-  top: 0;
-  left: 0;
+  margin: auto;
   width: 100vw;
   height: 100vh;
 }

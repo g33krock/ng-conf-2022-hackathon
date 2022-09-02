@@ -14,6 +14,8 @@ export function getInitialState(): IGameState {
   };
 }
 
+export let penaltySize:string = "superman"
+
 export function gameLogic(state: IGameState, commands: Commands): IGameState {
   evaluateCommands(state, commands);
   resolveCoinCollisions(state);
@@ -90,6 +92,14 @@ function resolvePlayerCollisions(state: IGameState) {
       winner.score += loser.score;
       state.players = state.players.filter((p) => p !== loser);
       state.eliminatedPlayers[loser.id] = winner.id;
+      const penaltyArray = ['superman', 'batman', 'greenarrow', 'aquaman'];
+
+      let penaltyArrayNumber: number = 0;
+      penaltyArrayNumber = penaltyArrayNumber + 1;
+
+      penaltySize = penaltyArray[penaltyArrayNumber];
+
+      
     }
   });
 }

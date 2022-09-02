@@ -9,6 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { IPlayer, IGameState } from '../../../../models';
+import { penaltySize } from '../../../../logic';
 
 const DEFAULT_COIN_COLOR = 'yellow';
 const DEFAULT_OTHER_PLAYER_COLOR = 'red';
@@ -43,13 +44,20 @@ export class FieldComponent implements AfterViewInit, OnChanges {
   canvas?: HTMLCanvasElement;
   ctx?: CanvasRenderingContext2D;
 
+  divisor:number = 1;
+
+
   constructor() {}
 
   get width() {
-    return this.canvas?.clientWidth ?? 0;
+    let adjustedWidth = this.canvas?.clientWidth ?? 0;
+    adjustedWidth =adjustedWidth /this.divisor
+    return adjustedWidth
   }
   get height() {
-    return this.canvas?.clientHeight ?? 0;
+    let adjustedHeight = this.canvas?.clientHeight ?? 0;
+    adjustedHeight =adjustedHeight /this.divisor
+    return adjustedHeight;
   }
 
   ngAfterViewInit(): void {
@@ -67,15 +75,19 @@ export class FieldComponent implements AfterViewInit, OnChanges {
     if (!this.canvas || !this.ctx) {
       return;
     }
+    const newWidth = this.canvas.clientWidth/this.divisor
+    const newHeight = this.canvas.clientHeight/this.divisor
 
     this.canvas.width = this.canvas.clientWidth;
     this.canvas.height = this.canvas.clientHeight;
-    this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+    this.ctx.clearRect(0, 0, newWidth, newHeight);
     this.drawBackground();
     this.drawTokens();
     this.drawOtherPlayers();
     this.drawPlayer();
   }
+
+  penaltySizer = penaltySize
 
   getCanvasCoordinatesFromStateCoordinates(
     stateX: number,
@@ -85,8 +97,8 @@ export class FieldComponent implements AfterViewInit, OnChanges {
       return null;
     }
 
-    const playerCanvasX = this.canvas.clientWidth / 2;
-    const playerCanvasY = this.canvas.clientHeight / 2;
+    const playerCanvasX = this.canvas.clientWidth / (2*this.divisor);
+    const playerCanvasY = this.canvas.clientHeight / (2*this.divisor);
 
     const x = playerCanvasX - (this.player.x - stateX) * SCALE;
     if (x < 0 || x > this.canvas.width) {
@@ -107,8 +119,8 @@ export class FieldComponent implements AfterViewInit, OnChanges {
     }
 
     // player is always at the center of the screen
-    const x = this.canvas.clientWidth / 2;
-    const y = this.canvas.clientHeight / 2;
+    const x = this.canvas.clientWidth / (2*this.divisor);
+    const y = this.canvas.clientHeight / (2*this.divisor);
 
     this.drawCircle(
       x,
